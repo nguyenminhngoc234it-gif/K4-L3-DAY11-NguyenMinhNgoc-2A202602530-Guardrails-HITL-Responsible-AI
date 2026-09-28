@@ -1,5 +1,5 @@
 """
-Assignment 11 — Rate Limiter starter (TODO).
+Assignment 11 — per-user sliding-window rate limiter.
 
 Sliding-window, per-user rate limiting. Blocks abuse that other
 guardrail layers do not address (flooding / cost attacks).
@@ -18,6 +18,10 @@ class RateLimitPlugin(base_plugin.BasePlugin):
 
     def __init__(self, max_requests: int = 10, window_seconds: int = 60):
         super().__init__(name="rate_limiter")
+        if isinstance(max_requests, bool) or not isinstance(max_requests, int) or max_requests < 1:
+            raise ValueError("max_requests must be a positive integer")
+        if isinstance(window_seconds, bool) or not isinstance(window_seconds, int) or window_seconds < 1:
+            raise ValueError("window_seconds must be a positive integer")
         self.max_requests = max_requests
         self.window_seconds = window_seconds
         self.user_windows: dict[str, deque] = defaultdict(deque)
@@ -34,16 +38,16 @@ class RateLimitPlugin(base_plugin.BasePlugin):
         """Return Content to block, or None to allow."""
         self.total_count += 1
         user_id = getattr(invocation_context, "user_id", None) or "anonymous"
-        now = time.time()
+        now = time.monotonic()
         window = self.user_windows[user_id]
 
-        # TODO: Implement sliding window:
-        # 1. Pop timestamps older than (now - window_seconds) from the left
-        # 2. If len(window) >= max_requests:
-        #       wait = window_seconds - (now - window[0])
-        #       self.blocked_count += 1
-        #       return self._block_response(
-        #           f"Rate limit exceeded. Try again in {wait:.0f}s."
-        #       )
-        # 3. Else: append now, return None
-        raise NotImplementedError("Implement RateLimitPlugin.on_user_message_callback")
+        while window and window[0] <= now - self.window_seconds:
+            window.popleft()
+        if len(window) >= self.max_requests:
+            wait = self.window_seconds - (now - window[0])
+            self.blocked_count += 1
+            return self._block_response(
+                f"Rate limit exceeded. Try again in {wait:.0f}s."
+            )
+        window.append(now)
+        return None

@@ -17,7 +17,7 @@ Theo **Quy ước chung Khóa 4** — đặt tên repo bài nộp của học vi
 
 - **Cấu trúc:**  
   `K4-L3-DAYxx-HoVaTen-MSSV-TenBai`  
-  *(Không dấu, không khoảng trắng, ngăn cách bằng `-`. Ngày học hai chữ số: `DAY11`.)*
+  _(Không dấu, không khoảng trắng, ngăn cách bằng `-`. Ngày học hai chữ số: `DAY11`.)_
 - **Day 11 (L3) — mẫu cụ thể:**  
   `K4-L3-DAY11-<HoVaTen>-<MSSV>-Guardrails-HITL-Responsible-AI`
 - **Ví dụ (thống nhất format MSSV):**  
@@ -75,9 +75,9 @@ K4-L3-DAY11-<HoVaTen>-<MSSV>-Guardrails-HITL-Responsible-AI/
 
 ### Artifact bắt buộc
 
-| Loại | File |
-|------|------|
-| Phòng thủ (**Blue**) | `outputs/results.json` |
+| Loại                                 | File                          |
+| ------------------------------------ | ----------------------------- |
+| Phòng thủ (**Blue**)                 | `outputs/results.json`        |
 | Tấn công (**Red** + **Red Advance**) | `outputs/attack_results.json` |
 
 **Bonus lab** (grader replay — không tự cấp từ JSON; chọn một trong hai):
@@ -96,10 +96,20 @@ K4-L3-DAY11-<HoVaTen>-<MSSV>-Guardrails-HITL-Responsible-AI/
 {
   "framework": "google-adk",
   "safe_queries": [
-    {"input": "...", "blocked": false, "layer": null, "response_preview": "..."}
+    {
+      "input": "...",
+      "blocked": false,
+      "layer": null,
+      "response_preview": "..."
+    }
   ],
   "attack_queries": [
-    {"input": "...", "blocked": true, "layer": "input_guardrail", "response_preview": "..."}
+    {
+      "input": "...",
+      "blocked": true,
+      "layer": "input_guardrail",
+      "response_preview": "..."
+    }
   ],
   "rate_limit": {
     "max_requests": 10,
@@ -108,13 +118,11 @@ K4-L3-DAY11-<HoVaTen>-<MSSV>-Guardrails-HITL-Responsible-AI/
     "passed": 10,
     "blocked": 5
   },
-  "edge_cases": [
-    {"input": "", "blocked": true, "layer": "input_guardrail"}
-  ]
+  "edge_cases": [{ "input": "", "blocked": true, "layer": "input_guardrail" }]
 }
 ```
 
-- `safe_queries` ≥ 5 · `attack_queries` ≥ 7 · `edge_cases` ≥ 3  
+- `safe_queries` ≥ 5 · `attack_queries` ≥ 7 · `edge_cases` ≥ 3
 - Mỗi query: bắt buộc `input`, `blocked`
 
 ### `outputs/attack_results.json`
@@ -122,10 +130,24 @@ K4-L3-DAY11-<HoVaTen>-<MSSV>-Guardrails-HITL-Responsible-AI/
 ```json
 {
   "unsafe_attacks": [
-    {"id": 1, "category": "Completion", "input": "...", "response_preview": "...", "leaked": true, "target": "unsafe"}
+    {
+      "id": 1,
+      "category": "Completion",
+      "input": "...",
+      "response_preview": "...",
+      "leaked": true,
+      "target": "unsafe"
+    }
   ],
   "guards_attacks": [
-    {"id": 1, "category": "Completion", "input": "...", "response_preview": "...", "leaked": false, "target": "guards"}
+    {
+      "id": 1,
+      "category": "Completion",
+      "input": "...",
+      "response_preview": "...",
+      "leaked": false,
+      "target": "guards"
+    }
   ]
 }
 ```
@@ -134,11 +156,11 @@ K4-L3-DAY11-<HoVaTen>-<MSSV>-Guardrails-HITL-Responsible-AI/
 
 ## 5. Checklist trước khi nộp link
 
-- [ ] Có `outputs/results.json` và **validate** được với `schemas/results.schema.json`
-- [ ] Có `outputs/attack_results.json` (unsafe + guards)
-- [ ] **Không** commit `.env` / API key
-- [ ] `outputs/` không chứa placeholder tự tạo tay (file do `python src/main.py --part 3|4` sinh ra)
-- [ ] Đã chạy tự kiểm:
+- [x] Có `outputs/results.json` và **validate** được với `schemas/results.schema.json`
+- [x] Có `outputs/attack_results.json` (unsafe + guards)
+- [x] **Không** commit `.env` / API key
+- [x] `outputs/` không chứa placeholder tự tạo tay (file do `python src/main.py --part 3|4` sinh ra)
+- [x] Đã chạy tự kiểm:
 
 **Windows (PowerShell):**
 
@@ -158,6 +180,6 @@ pytest tests/public -q
 python scripts/grade.py --submission-dir . --out outputs/grade_report.json
 ```
 
-- [ ] Nộp **link repo** đúng hạn lên LMS / CodeLabs
+- [x] Nộp **link repo** đúng hạn lên LMS / CodeLabs
 
 > Máy không chạy được (thiếu lib, sai path, lỗi cú pháp) → phần chấm máy = lỗi kỹ thuật — sửa đóng gói trước khi nộp.
